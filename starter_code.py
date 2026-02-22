@@ -14,6 +14,14 @@ import tracemalloc
 # ============================================================================
 
 def bubble_sort(arr):
+    for i in range(len(arr)): 
+        for j in range(0, len(arr) - i - 1): 
+            if arr[j] > arr[j + 1]: 
+                temp = arr[j] 
+                arr[j] = arr[j + 1] 
+                arr[j + 1] = temp 
+    return arr
+                
     """
     Sort array using bubble sort algorithm.
     
@@ -37,6 +45,16 @@ def bubble_sort(arr):
 
 
 def selection_sort(arr):
+    size = len(arr)
+    for i in range(size):
+        min_index = i
+        for j in range(i+1, size):
+            if arr[j] < arr[min_index]:
+                min_index = j
+        temp = arr[i]
+        arr[i] = arr[min_index]
+        arr[min_index] = temp
+    return arr
     """
     Sort array using selection sort algorithm.
     
@@ -59,6 +77,15 @@ def selection_sort(arr):
 
 
 def insertion_sort(arr):
+    size = len(arr)
+    for i in range(1, size):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+            arr[j + 1] = key
+    return arr
     """
     Sort array using insertion sort algorithm.
     
@@ -81,6 +108,35 @@ def insertion_sort(arr):
 
 
 def merge_sort(arr):
+    if len(arr) > 1:
+        mid = len(arr) // 2
+        L = arr[:mid]
+        R = arr[mid:]
+    
+        merge_sort(L)
+        merge_sort(R)
+    
+        i = j = k = 0
+    
+        while i < len(L) and j < len(R):
+            if L[i] < R[j]:
+                arr[k] = L[i]
+                i += 1
+            else:
+                arr[k] = R[j]
+                j += 1
+            k += 1
+    
+        while i < len(L):
+            arr[k] = L[i]
+            i += 1
+            k += 1
+    
+        while j < len(R):
+            arr[k] = R[j]
+            j += 1
+            k += 1
+    return arr
     """
     Sort array using merge sort algorithm.
     
@@ -132,17 +188,28 @@ def demonstrate_stability():
     # Hint: Or extract prices, sort them, and check if stable algorithms maintain original order
     # Hint: For stable sort: items with price 999 should stay in order (B before D)
     # Hint: For stable sort: items with price 1999 should stay in order (A before C before E)
-    
     results = {
-        "bubble_sort": "Not tested",
-        "selection_sort": "Not tested", 
-        "insertion_sort": "Not tested",
-        "merge_sort": "Not tested"
+        "bubble_sort": "Not Tested",  
+        "selection_sort": "Not Tested",  
+        "insertion_sort": "Not Tested",
+        "merge_sort": "Not Tested"
     }
     
     # TODO: Test each algorithm and update results dictionary with "Stable" or "Unstable"
+    prices = [product["price"] for product in products]
+    sorted_price= bubble_sort(prices.copy())
     
+    sorted_price = []
+    price_copy = prices.copy()
+    for price in sorted_price:
+        for i, products in enumerate(price_copy):
+            if products == sorted_price:
+                sorted_price.append(products[i])
+                price_copy[i] = None
+             
+            break
     return results
+    
 
 
 # ============================================================================
@@ -287,8 +354,8 @@ if __name__ == "__main__":
     
     # Uncomment these as you complete each part:
     
-    # test_sorting_correctness()
-    # benchmark_all_datasets()
-    # analyze_stability()
+    test_sorting_correctness()
+    benchmark_all_datasets()
+    analyze_stability()
     
-    print("\n⚠ Uncomment the test functions in the main block to run benchmarks!")
+    #print("\n⚠ Uncomment the test functions in the main block to run benchmarks!")
