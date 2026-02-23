@@ -16,10 +16,8 @@ import tracemalloc
 def bubble_sort(arr):
     for i in range(len(arr)): 
         for j in range(0, len(arr) - i - 1): 
-            if arr[j] > arr[j + 1]: 
-                temp = arr[j] 
-                arr[j] = arr[j + 1] 
-                arr[j + 1] = temp 
+            if arr[j]["price"] > arr[j + 1]["price"]: 
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
     return arr
                 
     """
@@ -49,11 +47,9 @@ def selection_sort(arr):
     for i in range(size):
         min_index = i
         for j in range(i+1, size):
-            if arr[j] < arr[min_index]:
+            if arr[j]["price"] < arr[min_index]["price"]:
                 min_index = j
-        temp = arr[i]
-        arr[i] = arr[min_index]
-        arr[min_index] = temp
+        arr[i], arr[min_index] = arr[min_index], arr[i]
     return arr
     """
     Sort array using selection sort algorithm.
@@ -81,7 +77,7 @@ def insertion_sort(arr):
     for i in range(1, size):
         key = arr[i]
         j = i - 1
-        while j >= 0 and arr[j] > key:
+        while j >= 0 and arr[j]["price"] > key["price"]:
             arr[j + 1] = arr[j]
             j -= 1
             arr[j + 1] = key
@@ -119,7 +115,7 @@ def merge_sort(arr):
         i = j = k = 0
     
         while i < len(L) and j < len(R):
-            if L[i] < R[j]:
+            if L[i]["price"] <= R[j]["price"]:
                 arr[k] = L[i]
                 i += 1
             else:
@@ -165,6 +161,7 @@ def merge_sort(arr):
 # ============================================================================
 
 def demonstrate_stability():
+    
     """
     Demonstrate which sorting algorithms are stable by sorting products by price.
     
@@ -183,6 +180,7 @@ def demonstrate_stability():
         {"name": "Widget E", "price": 1999, "original_position": 4},
     ]
     
+    
     # TODO: Sort products by price using each algorithm
     # Hint: You'll need to modify your sorting functions to work with dictionaries
     # Hint: Or extract prices, sort them, and check if stable algorithms maintain original order
@@ -196,21 +194,38 @@ def demonstrate_stability():
     }
     
     # TODO: Test each algorithm and update results dictionary with "Stable" or "Unstable"
-    prices = [product["price"] for product in products]
-    sorted_price= bubble_sort(prices.copy())
+    #Bubble sort
+    product_copy = products.copy()
+    bubble_sort(product_copy)
+    results["bubble_sort"] = stability(products, product_copy)
     
-    sorted_price = []
-    price_copy = prices.copy()
-    for price in sorted_price:
-        for i, products in enumerate(price_copy):
-            if products == sorted_price:
-                sorted_price.append(products[i])
-                price_copy[i] = None
-             
-            break
+    #Selection sort
+    product_copy = products.copy()
+    selection_sort(product_copy)
+    results["selection_sort"] = stability(products, product_copy)
+    
+    #Insertion sort
+    product_copy = products.copy()
+    insertion_sort(product_copy)
+    results["insertion_sort"] = stability(products, product_copy)
+    
+    #Merge sort
+    product_copy = products.copy()
+    merge_sort(product_copy)
+    results["merge_sort"] = stability(products, product_copy)
     return results
     
-
+def stability(original, sorted_list):
+    original999 = [p for p in original if p['price'] == 999] # p represents each product in the original list with price 999
+    sorted999 = [p for p in sorted_list if p['price'] == 999]
+    
+    original1999 = [p for p in original if p['price'] == 1999] # p represents each product in the original list with price 1999
+    sorted1999 = [p for p in sorted_list if p['price'] == 1999]
+    
+    if original999 == sorted999 and original1999 == sorted1999:
+        return "Stable"
+    else:
+        return "Unstable"
 
 # ============================================================================
 # PART 3: PERFORMANCE BENCHMARKING
